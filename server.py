@@ -18,7 +18,7 @@ lists = twitter.GetListsList()
 
 count = 200 / len(lists)
 
-min_tweet_len = 50
+min_tweet_len = 80
 
 
 # ===================== functions =====================
