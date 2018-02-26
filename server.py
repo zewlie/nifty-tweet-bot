@@ -18,6 +18,8 @@ lists = twitter.GetListsList()
 
 count = 200 / len(lists)
 
+min_tweet_len = 50
+
 
 # ===================== functions =====================
 
@@ -26,14 +28,21 @@ def grab_tweets():
     """Returns a list of 25 random tweets from the authenticated user's lists."""
 
     tweets = []
+    long_tweets = []
 
     for each in lists:
         tweets = tweets + twitter.GetListTimeline(list_id=each.id,
                                                   count=count,
                                                   include_rts=True)
-    shuffle(tweets)
+    for tweet in tweets:
+        if len(tweet.text) >= min_tweet_len:
+            long_tweets.append(tweet)
+    shuffle(long_tweets)
 
-    return tweets[:25]
+    if len(long_tweets) >= 25:
+        return long_tweets[:25]
+    else:
+        return long_tweets
 
 
 def filter_pos_tweets(tweets):
