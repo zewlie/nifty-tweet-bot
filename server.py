@@ -1,0 +1,118 @@
+"""A twitter bot that retweets positive tweets from cool lists."""
+
+
+import os
+from random import choice
+from random import shuffle
+import twitter
+import unirest
+
+
+twitter = twitter.Api(
+    consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
+    consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
+    access_token_key=os.environ['TWITTER_ACCESS_TOKEN_KEY'],
+    access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
+
+lists = twitter.GetListsList()
+
+count = 200 / len(lists)
+
+
+# ===================== functions =====================
+
+
+def grab_tweets():
+    """Returns a list of 25 random tweets from the authenticated user's lists."""
+
+    tweets = []
+
+    for each in lists:
+        tweets = tweets + twitter.GetListTimeline(list_id=each.id,
+                                                  count=count,
+                                                  include_rts=True)
+    shuffle(tweets)
+
+    return tweets[:25]
+
+
+def filter_pos_tweets(tweets):
+    """Returns a list of positive tweets after running sentiment analysis."""
+
+    pos_tweets = []
+
+    for tweet in tweets:
+        sentiment = unirest.post("https://japerk-text-processing.p.mashape.com/sentiment/",
+            headers={
+                "X-Mashape-Key": os.environ['X_MASHAPE_KEY'],
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json"
+                },
+            params={
+                "language": "english",
+                "text": tweet.text
+                }
+        )
+        if sentiment.body['label'] == 'pos':
+            pos_tweets.append(tweet)
+
+    return pos_tweets
+
+
+def choose_tweet(pos_tweets):
+    """Returns a single randomly selected tweet."""
+
+    tweet = choice(pos_tweets)
+
+    return tweet
+
+
+def like_tweets(pos_tweets):
+    """Authenticated user likes all tweets in pos_tweets."""
+
+    for tweet in pos_tweets:
+        twitter.CreateFavorite(status_id=tweet.id)
+
+    return
+
+
+def retweet(tweet):
+    """Authenticated user retweets tweet."""
+
+    twitter.PostRetweet(tweet.id, trim_user=False)
+
+    return
+
+
+def run():
+    """Runs the bot."""
+
+    # Returns a list of 25 random tweets from the authenticated user's lists.
+    tweets = grab_tweets()
+
+    # Returns a list of positive tweets after running sentiment analysis.
+    pos_tweets = filter_pos_tweets(tweets)
+
+    # Returns a single randomly selected positive tweet.
+    tweet = choose_tweet(pos_tweets)
+
+    # Authenticated user likes all positive tweets.
+    like_tweets(pos_tweets)
+
+    # Authenticated user retweets randomly selected positive tweet.
+    retweet(tweet)
+
+    # print tweet.id
+    # print "========= RETWEET ========="
+    # print tweet.text
+
+    # for tweet in pos_tweets:
+    #     print tweet.id
+    #     print "=========== LIKE ==========="
+    #     print tweet.text
+
+
+# ===================== run =====================
+
+
+run()
