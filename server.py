@@ -96,11 +96,11 @@ def run():
     # Returns a single randomly selected positive tweet.
     tweet = choose_tweet(pos_tweets)
 
-    # Authenticated user likes all positive tweets.
-    like_tweets(pos_tweets)
-
     # Authenticated user retweets randomly selected positive tweet.
     retweet(tweet)
+
+    # Authenticated user likes all positive tweets.
+    like_tweets(pos_tweets)
 
     # print tweet.id
     # print "========= RETWEET ========="
