@@ -72,7 +72,7 @@ def filter_pos_tweets(tweets):
 def log_sentiment(tweet, sentiment):
 
     print "TEXT"
-    print tweet.text
+    print tweet.id
     print "label: " + str(sentiment.body['label'])
     print "neg: " + str(sentiment.body['probability']['neg'])
     print "pos: " + str(sentiment.body['probability']['pos'])
