@@ -62,7 +62,7 @@ def filter_pos_tweets(tweets):
                 "text": tweet.text
                 }
         )
-        if sentiment.body['label'] == 'pos':
+        if sentiment.body['probability']['neg'] < 0.5:
             pos_tweets.append(tweet)
 
     return pos_tweets
