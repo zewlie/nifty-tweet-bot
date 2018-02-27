@@ -18,7 +18,7 @@ lists = twitter.GetListsList()
 
 count = 200 / len(lists)
 
-min_tweet_len = 80
+min_tweet_len = 120
 
 
 # ===================== functions =====================
@@ -62,7 +62,7 @@ def filter_pos_tweets(tweets):
                 "text": tweet.text
                 }
         )
-        if sentiment.body['probability']['neg'] < 0.5:
+        if sentiment.body['probability']['neg'] < 0.42:
             pos_tweets.append(tweet)
             log_sentiment(tweet, sentiment)
 
@@ -78,6 +78,10 @@ def log_sentiment(tweet, sentiment):
     print "pos: " + str(sentiment.body['probability']['pos'])
     print "neutral: " + str(sentiment.body['probability']['neutral'])
     print " "
+
+    sys.stdout.flush()
+
+    return
 
 
 def choose_tweet(pos_tweets):
@@ -123,7 +127,6 @@ def run():
     # Authenticated user likes all positive tweets.
     like_tweets(pos_tweets)
 
-    sys.stdout.flush()
 
 
 # ===================== run =====================
