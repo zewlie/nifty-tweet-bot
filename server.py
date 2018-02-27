@@ -1,6 +1,6 @@
 """A twitter bot that retweets positive tweets from cool lists."""
 
-
+import sys
 import os
 from random import choice
 from random import shuffle
@@ -64,8 +64,19 @@ def filter_pos_tweets(tweets):
         )
         if sentiment.body['probability']['neg'] < 0.5:
             pos_tweets.append(tweet)
+            log_sentiment(tweet, sentiment)
 
     return pos_tweets
+
+
+def log_sentiment(tweet, sentiment):
+
+    print "TEXT\n" + tweet.text + "\n======================"
+    print "label: " + str(sentiment.body['label'])
+    print "neg: " + str(sentiment.body['probability']['neg'])
+    print "pos: " + str(sentiment.body['probability']['pos'])
+    print "neutral: " + str(sentiment.body['probability']['neutral'])
+    print "\n"
 
 
 def choose_tweet(pos_tweets):
@@ -111,14 +122,7 @@ def run():
     # Authenticated user likes all positive tweets.
     like_tweets(pos_tweets)
 
-    # print tweet.id
-    # print "========= RETWEET ========="
-    # print tweet.text
-
-    # for tweet in pos_tweets:
-    #     print tweet.id
-    #     print "=========== LIKE ==========="
-    #     print tweet.text
+    sys.stdout.flush()
 
 
 # ===================== run =====================
