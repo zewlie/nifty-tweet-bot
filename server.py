@@ -71,12 +71,13 @@ def filter_pos_tweets(tweets):
 
 def log_sentiment(tweet, sentiment):
 
-    print "TEXT\n" + tweet.text + "\n======================"
+    print "TEXT"
+    print tweet.text
     print "label: " + str(sentiment.body['label'])
     print "neg: " + str(sentiment.body['probability']['neg'])
     print "pos: " + str(sentiment.body['probability']['pos'])
     print "neutral: " + str(sentiment.body['probability']['neutral'])
-    print "\n"
+    print " "
 
 
 def choose_tweet(pos_tweets):
