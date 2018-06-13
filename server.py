@@ -17,8 +17,12 @@ twitter = twitter.Api(
 lists = twitter.GetListsList()
 
 count = 200 / len(lists)
+num_tweets = 25
 
 min_tweet_len = 120
+
+max_neg = 0.32
+min_pos = 0.6
 
 
 # ===================== functions =====================
@@ -39,8 +43,8 @@ def grab_tweets():
             long_tweets.append(tweet)
     shuffle(long_tweets)
 
-    if len(long_tweets) >= 25:
-        return long_tweets[:25]
+    if len(long_tweets) >= num_tweets:
+        return long_tweets[:num_tweets]
     else:
         return long_tweets
 
@@ -62,7 +66,7 @@ def filter_pos_tweets(tweets):
                 "text": tweet.text
                 }
         )
-        if sentiment.body['probability']['neg'] < 0.36:
+        if (sentiment.body['probability']['neg'] <= max_neg) & (sentiment.body['probability']['pos'] >= min_pos):
             pos_tweets.append(tweet)
             log_sentiment(tweet, sentiment)
 
