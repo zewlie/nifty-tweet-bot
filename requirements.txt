@@ -14,5 +14,5 @@ requests-oauthlib==0.8.0
 six==1.11.0
 tzlocal==1.5.1
 Unirest==1.1.7
-urllib3==1.22
+urllib3==1.24.2
 wheel==0.24.0
